@@ -197,7 +197,7 @@
     font-weight: 300;
     letter-spacing: 0.06em;
     color: var(--accent);
-    margin: 14px 0 52px;
+    margin: 14px 0 28px;
   }
 
   .contacts {
@@ -266,7 +266,7 @@
     display: none; /* показывается скриптом, когда есть данные */
     align-items: center;
     gap: 16px;
-    margin-bottom: 44px;
+    margin-bottom: 48px;
     padding: 16px 20px;
     border: 1px solid var(--line);
     transition: border-color 0.3s ease, transform 0.3s ease;
@@ -283,7 +283,8 @@
     filter: grayscale(0.3) contrast(1.05);
     transition: filter 0.4s ease;
   }
-  .np-cover.on { display: block; }
+  .np-cover.on { display: block; animation: coverIn 0.5s ease; }
+  @keyframes coverIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; } }
   .nowplaying:hover .np-cover { filter: none; }
   .nowplaying[href]:hover {
     border-color: rgba(200,173,127,0.4);
@@ -380,6 +381,8 @@
 
     <!-- Главная -->
     <section class="panel active" id="home">
+      <h1>Алексей<em>.</em></h1>
+      <div class="nick">共産主義者 (:</div>
       <a class="nowplaying" id="nowplaying" target="_blank" rel="noopener">
         <img class="np-cover" id="npCover" alt="">
         <div class="eq"><i></i><i></i><i></i><i></i></div>
@@ -389,8 +392,6 @@
         </div>
         <span class="np-arr">→</span>
       </a>
-      <h1>Алексей<em>.</em></h1>
-      <div class="nick">共産主義者 (:</div>
       <div class="contacts">
         <a href="https://t.me/cumuni" target="_blank" rel="noopener">
           <span>tg</span>@cumuni<span class="arr">→</span>
@@ -507,6 +508,10 @@
       const cover = document.getElementById('npCover');
       const ambient = document.getElementById('ambient');
       if (data.cover) {
+        cover.onerror = () => {
+          cover.classList.remove('on');
+          ambient.classList.remove('on');
+        };
         cover.src = data.cover;
         cover.classList.add('on');
         ambient.style.backgroundImage = `url("${data.cover}")`;
