@@ -18,9 +18,10 @@ export default async (req) => {
   const key = process.env.LASTFM_KEY;
 
   if (user && key) {
+    if (debug) log.push({ step: "config", userLen: user.length, keyLen: key.length, trimmed: key !== key.trim() });
     try {
-      const url = LFM + "?method=user.getrecenttracks&user=" + encodeURIComponent(user)
-        + "&api_key=" + encodeURIComponent(key) + "&format=json&limit=1";
+      const url = LFM + "?method=user.getrecenttracks&user=" + encodeURIComponent(user.trim())
+        + "&api_key=" + encodeURIComponent(key.trim()) + "&format=json&limit=1";
       const data = await get(url, {});
       const t = data?.recenttracks?.track;
       const track = Array.isArray(t) ? t[0] : t;
@@ -84,7 +85,11 @@ export default async (req) => {
 
 async function get(url, headers) {
   const res = await fetch(url, { headers });
-  if (!res.ok) throw new Error("http " + res.status);
+  if (!res.ok) {
+    let body = "";
+    try { body = (await res.text()).slice(0, 300); } catch {}
+    throw new Error("http " + res.status + " " + body);
+  }
   return res.json();
 }
 
