@@ -70,8 +70,12 @@ export default async (req) => {
     const entities = land?.result?.blocks?.[0]?.entities;
     log.push({ step: "landing", count: entities?.length ?? 0 });
 
-    const t = entities?.[0]?.data?.trackData ?? entities?.[0]?.data;
-    const track = t?.track ?? t;
+    // РІ РѕС‚Р»Р°РґРєРµ РїРѕРєР°Р·С‹РІР°РµРј СЃС‹СЂСѓСЋ СЃС‚СЂСѓРєС‚СѓСЂСѓ РїРµСЂРІРѕР№ Р·Р°РїРёСЃРё, С‡С‚РѕР±С‹ РїРѕРЅСЏС‚СЊ С„РѕСЂРјР°С‚
+    if (debug && entities?.length) {
+      return json({ log, sample: entities[0] }, 200, "debug");
+    }
+
+    const track = findTrack(entities?.[0]);
     if (track?.title) {
       return finish({ playing: false, title: track.title, artist: names(track.artists) }, "landing");
     }
@@ -106,6 +110,17 @@ export default async (req) => {
     return json(data, 200, "miss");
   }
 };
+
+// СЂРµРєСѓСЂСЃРёРІРЅРѕ РёС‰РµРј РѕР±СЉРµРєС‚, РїРѕС…РѕР¶РёР№ РЅР° С‚СЂРµРє (РµСЃС‚СЊ title Рё artists)
+function findTrack(obj, depth = 0) {
+  if (!obj || typeof obj !== "object" || depth > 6) return null;
+  if (typeof obj.title === "string" && Array.isArray(obj.artists)) return obj;
+  for (const v of Object.values(obj)) {
+    const found = findTrack(v, depth + 1);
+    if (found) return found;
+  }
+  return null;
+}
 
 function names(artists) {
   return (artists || []).map(a => a.name).join(", ");
