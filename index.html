@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="Алексей · 共産主義者 (:">
+<meta property="og:description" content="Любитель. Ебанитик. Живой.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0e0f11">
+<title>Алексей · 共産主義者</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230e0f11'/%3E%3Ccircle cx='32' cy='32' r='12' fill='%23c8ad7f'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200;300;500&family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f11;
+    --line: #26292f;
+    --text: #e8e6e1;
+    --muted: #84888f;
+    --accent: #c8ad7f;
+    --closed: #b3555a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Unbounded', 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(200,173,127,0.05), transparent),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  }
+
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* Атмосферный фон из обложки текущего трека */
+  #ambient {
+    position: fixed;
+    inset: -60px;
+    z-index: -1;
+    background-size: cover;
+    background-position: center;
+    filter: blur(70px) saturate(1.3);
+    opacity: 0;
+    transition: opacity 1.4s ease, background-image 0.6s ease;
+    pointer-events: none;
+  }
+  #ambient.on { opacity: 0.22; animation: breathe 9s ease-in-out infinite; }
+  @keyframes breathe {
+    0%, 100% { opacity: 0.16; }
+    50%      { opacity: 0.26; }
+  }
+  @media (prefers-reduced-motion: reduce) { #ambient { transition: none; } }
+
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ── Шапка ─────────────────────────────────── */
+  header { padding: 24px 0; }
+  header .wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .small {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  /* Статус: Открыто / Закрыто */
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 8px 16px;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    transition: color 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+  }
+  .status .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    transition: background 0.6s ease;
+  }
+  .status.open {
+    color: var(--accent);
+    border-color: rgba(200,173,127,0.35);
+    animation: glow 3s ease-in-out infinite;
+  }
+  .status.open .dot {
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .status.closed {
+    color: var(--closed);
+    border-color: rgba(179,85,90,0.35);
+  }
+  .status.closed .dot {
+    background: var(--closed);
+    animation: blink 2.4s steps(2) infinite;
+  }
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 0px rgba(200,173,127,0); }
+    50%      { box-shadow: 0 0 18px rgba(200,173,127,0.25); }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%      { transform: scale(1.6); opacity: 0.5; }
+  }
+  @keyframes blink {
+    50% { opacity: 0.25; }
+  }
+  /* смена текста статуса */
+  .status .txt { display: inline-block; }
+  .status.switching .txt { animation: swap 0.5s ease; }
+  @keyframes swap {
+    0%   { opacity: 0; transform: translateY(6px); }
+    100% { opacity: 1; transform: none; }
+  }
+
+  /* ── Вкладки ───────────────────────────────── */
+  nav { display: flex; gap: 28px; }
+  .tab {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 300;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding: 4px 0;
+    position: relative;
+    transition: color 0.25s ease;
+  }
+  .tab::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%; height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); font-weight: 500; }
+  .tab.active::after { transform: scaleX(1); }
+
+  /* ── Панели ────────────────────────────────── */
+  main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 48px 0 64px;
+  }
+  .panel { display: none; width: 100%; }
+  .panel.active { display: block; }
+  .panel.active > * {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: rise 0.6s ease forwards;
+  }
+  .panel.active > *:nth-child(2) { animation-delay: 0.08s; }
+  .panel.active > *:nth-child(3) { animation-delay: 0.16s; }
+  .panel.active > *:nth-child(4) { animation-delay: 0.24s; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+
+  /* ── Главная ───────────────────────────────── */
+  h1 {
+    font-weight: 200;
+    font-size: clamp(40px, 8.5vw, 84px);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+    display: inline-block;
+    animation: dotPulse 4s ease-in-out infinite;
+  }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.45; }
+  }
+
+  .nick {
+    font-size: 15px;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    margin: 14px 0 28px;
+    display: inline-block;
+    cursor: default;
+  }
+  .nick::after {
+    content: '· коммунист';
+    color: var(--muted);
+    font-size: 12px;
+    margin-left: 10px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .nick:hover::after, .nick.show::after { opacity: 1; }
+
+  .contacts {
+    border-top: 1px solid var(--line);
+  }
+  .contacts a {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 22px 6px;
+    border-bottom: 1px solid var(--line);
+    font-size: clamp(17px, 3vw, 22px);
+    font-weight: 300;
+    transition: padding-left 0.3s ease, color 0.3s ease;
+  }
+  .c-ico {
+    width: 22px;
+    height: 22px;
+    color: var(--muted);
+    flex-shrink: 0;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+  .contacts a:hover .c-ico { color: var(--accent); transform: scale(1.1); }
+  .c-txt { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .c-label {
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color 0.3s ease;
+  }
+  .c-main { font-size: inherit; }
+  .contacts a:hover .c-label { color: var(--accent); }
+  .contacts a .arr {
+    margin-left: auto;
+    color: var(--muted);
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  .contacts a:hover { padding-left: 18px; color: var(--accent); }
+  .contacts a:hover span { color: var(--accent); }
+  .contacts a:hover .arr { transform: translateX(6px); color: var(--accent); }
+
+  /* ── О себе ────────────────────────────────── */
+  .about-title {
+    font-weight: 200;
+    font-size: clamp(28px, 5vw, 44px);
+    margin-bottom: 28px;
+  }
+  .lead {
+    max-width: 520px;
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 48px;
+  }
+  .lead strong { color: var(--text); font-weight: 500; }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .facts div { background: var(--bg); padding: 20px 22px; }
+  .facts .label {
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .facts .value { font-size: 13px; font-weight: 500; }
+
+  /* ── Сейчас слушаю ─────────────────────────── */
+  .nowplaying {
+    display: none; /* показывается скриптом, когда есть данные */
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 48px;
+    padding: 16px 20px;
+    border: 1px solid var(--line);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+  }
+  .nowplaying.on { display: flex; }
+
+  /* Обложка альбома */
+  .np-cover {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    object-fit: cover;
+    display: none;
+    filter: grayscale(0.3) contrast(1.05);
+    transition: filter 0.4s ease;
+  }
+  .np-cover.on { display: block; animation: coverIn 0.5s ease; }
+  @keyframes coverIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; } }
+  .nowplaying:hover .np-cover { filter: none; }
+  .nowplaying[href]:hover {
+    border-color: rgba(200,173,127,0.4);
+    transform: translateX(4px);
+  }
+  .nowplaying[href]:hover .np-track { color: var(--accent); }
+  .nowplaying[href]:hover .np-arr { transform: translateX(5px); color: var(--accent); }
+  .np-arr {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 14px;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  .nowplaying:not([href]) .np-arr { display: none; }
+  .eq {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  .eq i {
+    width: 3px;
+    background: var(--accent);
+    animation: eq 1s ease-in-out infinite;
+  }
+  .eq i:nth-child(1) { height: 60%; animation-delay: 0s; }
+  .eq i:nth-child(2) { height: 100%; animation-delay: 0.2s; }
+  .eq i:nth-child(3) { height: 40%; animation-delay: 0.4s; }
+  .eq i:nth-child(4) { height: 80%; animation-delay: 0.1s; }
+  @keyframes eq {
+    0%, 100% { transform: scaleY(0.4); }
+    50%      { transform: scaleY(1); }
+  }
+  .nowplaying.idle .eq i { animation: none; transform: scaleY(0.3); background: var(--muted); }
+  .np-info { min-width: 0; }
+  .np-label {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .np-track {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .np-track .artist { color: var(--muted); font-weight: 300; }
+
+  /* ── Гостевая ──────────────────────────────── */
+  .gb-form { max-width: 520px; }
+  .gb-form input,
+  .gb-form textarea {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-family: inherit;
+    font-weight: 300;
+    font-size: 13px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    transition: border-color 0.3s ease;
+  }
+  .gb-form textarea { min-height: 110px; resize: vertical; }
+  .gb-form input:focus,
+  .gb-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .gb-form input::placeholder,
+  .gb-form textarea::placeholder { color: var(--muted); }
+  .gb-form button {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 13px 32px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  .gb-form button:hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .gb-form button:disabled { opacity: 0.4; cursor: default; }
+  .gb-note {
+    margin-top: 18px;
+    font-size: 12px;
+    color: var(--muted);
+    min-height: 18px;
+  }
+  .gb-note.ok { color: var(--accent); }
+  .gb-hp { display: none; }
+
+  /* ── Футер ─────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 26px 0;
+  }
+  footer .wrap {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .panel.active > * { opacity: 1; transform: none; }
+  }
+
+  /* ── Десктоп: главная в две колонки ── */
+  @media (min-width: 960px) {
+    .wrap { max-width: 1060px; }
+    #home.panel.active {
+      display: flex;
+      align-items: center;
+      gap: 72px;
+    }
+    #home .intro { flex: 1; }
+    #home .side { width: 460px; flex-shrink: 0; }
+    #home .nick { margin-bottom: 0; }
+    h1 { font-size: clamp(72px, 8vw, 110px); }
+    .about-title { font-size: clamp(36px, 4vw, 54px); }
+    .lead { font-size: 14px; }
+  }
+
+  @media (max-width: 640px) {
+    .facts { grid-template-columns: 1fr; }
+    main { padding: 32px 0 48px; }
+    nav { order: 3; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div id="ambient"></div>
+
+<header>
+  <div class="wrap">
+    <span class="status" id="status"><span class="dot"></span><span class="txt" id="statusTxt">…</span></span>
+    <nav>
+      <button class="tab active" data-panel="home">главная</button>
+      <button class="tab" data-panel="about">о себе</button>
+      <button class="tab" data-panel="guest">гостевая</button>
+    </nav>
+    <span class="small">Оренбург · <span id="clock">--:--</span></span>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <!-- Главная -->
+    <section class="panel active" id="home">
+      <div class="intro">
+        <h1>Алексей<em>.</em></h1>
+        <div class="nick">共産主義者 (:</div>
+      </div>
+      <div class="side">
+      <a class="nowplaying" id="nowplaying" target="_blank" rel="noopener">
+        <img class="np-cover" id="npCover" alt="">
+        <div class="eq"><i></i><i></i><i></i><i></i></div>
+        <div class="np-info">
+          <div class="np-label" id="npLabel">Сейчас слушаю</div>
+          <div class="np-track" id="npTrack"></div>
+        </div>
+        <span class="np-arr">→</span>
+      </a>
+      <div class="contacts">
+        <a href="https://t.me/cumuni" target="_blank" rel="noopener">
+          <svg class="c-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          <span class="c-txt">
+            <span class="c-label">Связь со мной</span>
+            <span class="c-main">написать в телеграм</span>
+          </span>
+          <span class="arr">→</span>
+        </a>
+        <a href="https://music.yandex.ru/playlists/lk.8e9d77c0-e41d-487c-98ff-d5c19ddba624" target="_blank" rel="noopener">
+          <svg class="c-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><path d="M11 18V5l10-2v13"/></svg>
+          <span class="c-txt">
+            <span class="c-label">Что я слушаю</span>
+            <span class="c-main">мой плейлист</span>
+          </span>
+          <span class="arr">→</span>
+        </a>
+      </div>
+      </div>
+    </section>
+
+    <!-- О себе -->
+    <section class="panel" id="about">
+      <h2 class="about-title">О себе<em style="color:var(--accent);font-style:normal">.</em></h2>
+      <p class="lead">
+        <strong>Любитель. Ебанитик.</strong> Живу в Оренбурге.
+        Этот сайт — просто способ сказать привет.
+      </p>
+      <div class="facts">
+        <div>
+          <div class="label">Чем занимаюсь</div>
+          <div class="value">Хуйнёй</div>
+        </div>
+        <div>
+          <div class="label">Где</div>
+          <div class="value">На территории ЛНР</div>
+        </div>
+        <div>
+          <div class="label">Сейчас</div>
+          <div class="value">Живой</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Гостевая -->
+    <section class="panel" id="guest">
+      <h2 class="about-title">Гостевая<em style="color:var(--accent);font-style:normal">.</em></h2>
+      <p class="lead">Оставь пару слов — я прочту.</p>
+      <form class="gb-form" id="gbForm">
+        <p class="gb-hp"><input name="bot-field" tabindex="-1" autocomplete="off"></p>
+        <input type="text" name="name" placeholder="Кто ты" maxlength="60" required>
+        <textarea name="message" placeholder="Сообщение" maxlength="1000" required></textarea>
+        <button type="submit" id="gbBtn">Отправить</button>
+        <div class="gb-note" id="gbNote"></div>
+      </form>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="small">© 2026</span>
+  </div>
+</footer>
+
+<script>
+  // ── Вкладки ──
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const panel = document.getElementById(tab.dataset.panel);
+      // перезапуск анимации появления
+      void panel.offsetWidth;
+      panel.classList.add('active');
+    });
+  });
+
+  // ── Часы (Оренбург, UTC+5) ──
+  function tick() {
+    document.getElementById('clock').textContent =
+      new Date().toLocaleTimeString('ru-RU', {
+        timeZone: 'Asia/Yekaterinburg', hour: '2-digit', minute: '2-digit'
+      });
+  }
+
+  // ── Автоматический статус ──
+  // Закрыто ночью по МСК; днём — «Слушаю музыку», если реально играет трек, иначе «Открыто»
+  let musicPlaying = false;
+  let lastState = null;
+  function updateStatus() {
+    const mskHour = parseInt(
+      new Intl.DateTimeFormat('ru-RU', {
+        timeZone: 'Europe/Moscow', hour: '2-digit', hour12: false
+      }).format(new Date()), 10
+    );
+    const isOpen = mskHour >= 7;
+    const state = !isOpen ? 'closed' : (musicPlaying ? 'music' : 'open');
+    if (state === lastState) return;
+    lastState = state;
+
+    const el = document.getElementById('status');
+    const txt = document.getElementById('statusTxt');
+    el.classList.remove('open', 'closed');
+    el.classList.add(state === 'closed' ? 'closed' : 'open', 'switching');
+    txt.textContent =
+      state === 'closed' ? 'Закрыто' :
+      state === 'music' ? 'Слушаю музыку' : 'Открыто';
+    setTimeout(() => el.classList.remove('switching'), 500);
+  }
+
+  // ── Гостевая: отправка без перезагрузки ──
+  document.getElementById('gbForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const btn = document.getElementById('gbBtn');
+    const note = document.getElementById('gbNote');
+    btn.disabled = true;
+    note.className = 'gb-note';
+    note.textContent = 'Отправляю…';
+    try {
+      const res = await fetch('/api/guestbook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(new FormData(this)).toString(),
+      });
+      if (!res.ok) throw new Error();
+      this.reset();
+      note.className = 'gb-note ok';
+      note.textContent = 'Дошло. Спасибо (:';
+    } catch {
+      note.textContent = 'Не отправилось — попробуй ещё раз.';
+    }
+    btn.disabled = false;
+  });
+
+  document.querySelector('.nick').addEventListener('click', function () {
+    this.classList.toggle('show');
+  });
+
+  tick();
+  updateStatus();
+  setInterval(() => { tick(); updateStatus(); }, 15000);
+
+  // ── Сейчас слушаю (через серверную функцию /api/nowplaying) ──
+  // Работает после деплоя на Netlify с заданной переменной YANDEX_MUSIC_TOKEN.
+  // Локально (при открытии файла напрямую) блок просто не показывается.
+  function escapeHtml(str) {
+    return String(str || '').replace(/[&<>"']/g, c =>
+      ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+
+  async function updateNowPlaying() {
+    try {
+      const res = await fetch('/api/nowplaying');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data.title) return;
+
+      const box = document.getElementById('nowplaying');
+      document.getElementById('npLabel').textContent =
+        data.playing ? 'Сейчас слушаю' : (data.liked ? 'Последний лайк' : 'Недавно играло');
+      document.getElementById('npTrack').innerHTML =
+        `${escapeHtml(data.title)} <span class="artist">— ${escapeHtml(data.artist)}</span>`;
+      if (data.url) box.setAttribute('href', data.url);
+      else box.removeAttribute('href');
+
+      document.title = data.playing
+        ? '♪ ' + data.title + ' — ' + data.artist
+        : 'Алексей · 共産主義者';
+
+      const cover = document.getElementById('npCover');
+      const ambient = document.getElementById('ambient');
+      if (data.cover) {
+        cover.onerror = () => {
+          cover.classList.remove('on');
+          ambient.classList.remove('on');
+        };
+        cover.src = data.cover;
+        cover.classList.add('on');
+        ambient.style.backgroundImage = `url("${data.cover}")`;
+        ambient.classList.add('on');
+      } else {
+        cover.classList.remove('on');
+        ambient.classList.remove('on');
+      }
+      box.classList.add('on');
+      box.classList.toggle('idle', !data.playing);
+
+      musicPlaying = !!data.playing;
+      lastState = null;   // форсируем пересчёт капсулы
+      updateStatus();
+    } catch (e) { /* функции нет — молча пропускаем */ }
+  }
+  updateNowPlaying();
+  setInterval(updateNowPlaying, 30000);
+</script>
+
+</body>
+</html>
