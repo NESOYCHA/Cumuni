@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Музыка · Алексей</title>
+<meta name="theme-color" content="#0e0f11">
+<meta property="og:title" content="Музыка · 共産主義者 (:">
+<meta property="og:description" content="Что я слушал на этой неделе">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230e0f11'/%3E%3Ccircle cx='32' cy='32' r='12' fill='%23c8ad7f'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200;300;500&family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f11;
+    --line: #26292f;
+    --text: #e8e6e1;
+    --muted: #84888f;
+    --accent: #c8ad7f;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Unbounded', 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.7;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(200,173,127,0.05), transparent),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  }
+  ::selection { background: var(--accent); color: var(--bg); }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
+
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 28px; }
+
+  header { padding: 26px 0; }
+  header .wrap { display: flex; justify-content: space-between; align-items: center; }
+  .back {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color 0.3s ease;
+  }
+  .back:hover { color: var(--accent); }
+  .small { font-size: 11px; letter-spacing: 0.08em; color: var(--muted); }
+
+  main { padding: 40px 0 80px; }
+
+  h1 {
+    font-weight: 200;
+    font-size: clamp(38px, 8vw, 64px);
+    line-height: 1.05;
+    margin-bottom: 10px;
+  }
+  h1 em { font-style: normal; color: var(--accent); }
+  .sub { color: var(--muted); font-size: 12px; letter-spacing: 0.06em; margin-bottom: 56px; }
+
+  .label {
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  /* ── Артисты: строки с барами ── */
+  .artists { margin-bottom: 64px; }
+  .row {
+    display: block;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    transition: padding-left 0.3s ease;
+  }
+  .row:first-of-type { border-top: 1px solid var(--line); }
+  .row:hover { padding-left: 10px; }
+  .row-top { display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px; }
+  .rank {
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 18px;
+  }
+  .row:first-of-type .rank { color: var(--accent); }
+  .name {
+    font-weight: 500;
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .plays { margin-left: auto; font-size: 11px; color: var(--muted); flex-shrink: 0; }
+  .bar {
+    height: 2px;
+    background: var(--line);
+    overflow: hidden;
+  }
+  .bar i {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    width: 0;
+    transition: width 1s cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+
+  /* ── Треки: простой список ── */
+  .track .artist { color: var(--muted); font-weight: 300; }
+
+  .state {
+    color: var(--muted);
+    font-size: 12px;
+    padding: 30px 0;
+  }
+
+  .fade { opacity: 0; transform: translateY(12px); animation: rise 0.6s ease forwards; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .fade { animation: none; opacity: 1; transform: none; }
+    .bar i { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="back" href="/">← на главную</a>
+    <span class="small">неделя · last.fm</span>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <h1 class="fade">Музыка<em>.</em></h1>
+    <div class="sub fade">что я слушал за последние семь дней</div>
+
+    <div class="label fade">Артисты недели</div>
+    <div class="artists" id="artists"><div class="state">Загружаю…</div></div>
+
+    <div class="label fade">Треки недели</div>
+    <div class="artists" id="tracks"><div class="state">Загружаю…</div></div>
+  </div>
+</main>
+
+<script>
+  function esc(s) {
+    return String(s || '').replace(/[&<>"']/g, c =>
+      ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+
+  async function load() {
+    try {
+      const res = await fetch('/api/stats');
+      const data = await res.json();
+
+      const aBox = document.getElementById('artists');
+      if (data.artists?.length) {
+        const max = data.artists[0].plays || 1;
+        aBox.innerHTML = data.artists.map((a, i) => `
+          <a class="row" ${a.url ? `href="${esc(a.url)}" target="_blank" rel="noopener"` : ''}>
+            <div class="row-top">
+              <span class="rank">${String(i + 1).padStart(2, '0')}</span>
+              <span class="name">${esc(a.name)}</span>
+              <span class="plays">${a.plays}</span>
+            </div>
+            <div class="bar"><i data-w="${Math.round(a.plays / max * 100)}"></i></div>
+          </a>`).join('');
+        requestAnimationFrame(() =>
+          aBox.querySelectorAll('.bar i').forEach(el => el.style.width = el.dataset.w + '%'));
+      } else {
+        aBox.innerHTML = '<div class="state">За неделю пока тихо.</div>';
+      }
+
+      const tBox = document.getElementById('tracks');
+      if (data.tracks?.length) {
+        tBox.innerHTML = data.tracks.map((t, i) => `
+          <a class="row track" ${t.url ? `href="${esc(t.url)}" target="_blank" rel="noopener"` : ''}>
+            <div class="row-top">
+              <span class="rank">${String(i + 1).padStart(2, '0')}</span>
+              <span class="name">${esc(t.name)} <span class="artist">— ${esc(t.artist)}</span></span>
+              <span class="plays">${t.plays}</span>
+            </div>
+          </a>`).join('');
+      } else {
+        tBox.innerHTML = '<div class="state">Пусто.</div>';
+      }
+    } catch (e) {
+      document.getElementById('artists').innerHTML =
+        '<div class="state">Не достучался до статистики — загляни позже.</div>';
+      document.getElementById('tracks').innerHTML = '';
+    }
+  }
+  load();
+</script>
+
+</body>
+</html>
